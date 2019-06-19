@@ -1,0 +1,8 @@
+
+apiTitle: NFS-API
+splitSpec: false
+codeSamples: true
+swaggerUI: true
+travis: true
+repo: noorim-project/nfs-docs
+oasVersion: 3.0.0
