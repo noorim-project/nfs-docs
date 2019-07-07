@@ -11,9 +11,61 @@ info:
 servers:
   - url: 'http://nurim.jaehoon.kim:5000/api/v1'
 paths:
+  /signup:
+    post:
+      tags:
+        - Student
+      summary: 회원가입
+      description: '임시 유저를 생성하며, 유저에게 인증 코드가 담긴 이메일을 전송합니다.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - user_id
+                - password
+              properties:
+                email:
+                  type: string
+                  example: by09115@jaehoon.kim
+                  description: user email
+                user_id:
+                  type: string
+                  example: by09115
+                  description: user identity
+                password:
+                  type: string
+                  example: thisIsP@ssword
+                  description: user password
+      responses:
+        '202':
+          description: '임시 유저가 생성되고, 인증 이메일이 발송됨'
+        '400':
+          description: Bad request
+        '409':
+          description: Conflict
+  /signup/verify:
+    get:
+      tags:
+        - Student
+      summary: 유저 이메일 인증
+      description: 발송된 이메일에 있는 인증 코드를 통해 유저 이메일 인증
+      parameters:
+        - name: code
+          in: query
+          description: validate code
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 계정이 성공적으로 인증됨
+        '401':
+          description: 인증 코드 불일치
   /login:
     post:
-      summary: User authentication
+      summary: 로그인
       operationId: login
       tags:
         - Student
@@ -55,6 +107,52 @@ paths:
           description: Bad request
         '403':
           description: Can not find match applicant info
+  /refresh:
+    patch:
+      tags:
+        - Student
+      summary: 유저 JWT 토큰 재생성
+      description: |
+        # 유저의 토큰을 refresh
+      parameters:
+        - name: X-Refresh-Token
+          in: header
+          description: '(e.g. "Bearer {token}")'
+          schema:
+            type: string
+      responses:
+        '201':
+          description: 성공적으로 재생성됨
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access:
+                    type: string
+                    example: '{{ access token }}'
+        '400':
+          description: 헤더의 부재 혹은 refresh token 불일치
+  /logout:
+    delete:
+      tags:
+        - Student
+      summary: 유저 JWT 토큰 삭제
+      description: |
+        # 유저의 토큰을 삭제
+      parameters:
+        - name: X-Refresh-Token
+          in: header
+          description: '(e.g. "Bearer {token}")'
+          schema:
+            type: string
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: 인증 헤더의 부재
+        '403':
+          description: refresh token 불일치
 components:
   securitySchemes:
     Public:
