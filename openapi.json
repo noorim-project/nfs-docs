@@ -237,12 +237,6 @@
         "in": "header",
         "name": "Authorization",
         "description": "If endpoint makred as this, it can be accessed by anyone"
-      },
-      "Applicant": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "Authorization",
-        "description": "If endpoint marked as this, it can be accessed with applicant authority"
       }
     }
   }
